@@ -1,0 +1,4 @@
+prometheus_client==0.20.0
+schedule==1.2.1
+psutil==5.9.8
+nvidia-ml-py3==7.352.0
