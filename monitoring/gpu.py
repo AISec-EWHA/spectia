@@ -1,14 +1,19 @@
 import pynvml
 
 from common.imports import *
+from common.time import *
+
 
 class GpuCollector(object):
     def __init__(self):
         pynvml.nvmlInit()
+        self.gpu_usage_data = pd.DataFrame(columns=['Timestamp', 'GPU Number', 'Percentage'])
+        self.time_manager = TimeManager()
+
 
     @property
-    def gpu_info(self):
-        timestamp = pd.Timestamp.now()
+    def get_info(self):
+        timestamp = self.time_manager.get_timestamp
 
         gpu_usage = []
 
@@ -19,12 +24,26 @@ class GpuCollector(object):
         for i in range(num_gpu_cores):
             handle = pynvml.nvmlDeviceGetHandleByIndex(i)
             gpu_percent = pynvml.nvmlDeviceGetUtilizationRates(handle).gpu
-            gpu_usage.append({'GPU Number': i, 'Utilization (%)': gpu_percent, 'Timestamp': timestamp})
+            new_data = pd.DataFrame([{
+                'Timestamp': timestamp,
+                'GPU Number': i,
+                'Percentage': gpu_percent
+            }])
+            self.gpu_usage_data = pd.concat([self.gpu_usage_data, new_data], ignore_index=True)
         
-        df = pd.DataFrame(gpu_usage)
-        df.set_index('Timestamp', inplace=True)
+        return self.gpu_usage_data
 
-        return df
+
+    @property
+    def get_color(self):
+        return alt.Scale(
+            domain=list(range(8)),
+            range=[
+                '#FF0000', '#FF7F00', '#FFFF00', '#7FFF00',
+                '#00FF00', '#00FFFF', '#7F00FF', '#FF69B4'
+            ]
+        )
+
 
     def __del__(self):
         pynvml.nvmlShutdown()
