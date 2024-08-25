@@ -12,9 +12,7 @@ class GpuCollector(object):
         self.config_manager = ConfigManager()
         self.time_manager = TimeManager()
         self.data_count  = self.config_manager.get_gpu_total_second // self.config_manager.get_gpu_delta_second
-
         self.gpu_num = pynvml.nvmlDeviceGetCount()
-
 
 
     def update_info(self, new):
@@ -51,8 +49,8 @@ class GpuCollector(object):
         return alt.Scale(
             domain=list(range(self.gpu_num)),
             range=[
-                '#FF0000', '#FF7F00', '#FFFF00', '#7FFF00',
-                '#00FF00', '#00FFFF', '#7F00FF', '#FF69B4'
+                '#FF0000', '#FF7F00', '#FFFF00', '#00FF00', 
+                '#00FFFF', '#375582', '#7F00FF', '#FF69B4'
             ]
         )
 
