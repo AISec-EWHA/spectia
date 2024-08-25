@@ -18,11 +18,11 @@ chart_placeholder = st.empty()
 update_interval = 5
 
 while True:
-    df = gpu_collector.get_info
+    gpu_data = gpu_collector.get_info
     
-    chart = alt.Chart(df).mark_line().encode(
+    chart = alt.Chart(gpu_data).mark_line().encode(
         x=alt.X('Timestamp:O', title='Timestamp', axis=alt.Axis(labelAngle=0)),
-        y=alt.Y('Percentage:Q', title='Percentage'),
+        y=alt.Y('Percentage:Q', title='Percentage', scale=alt.Scale(domain=[0, 100])),
         color=alt.Color('GPU Number:N', scale=gpu_collector.get_color)
     ).properties(
         title='GPU Usage'
