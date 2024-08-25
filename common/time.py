@@ -10,6 +10,6 @@ class TimeManager:
 
     @property
     def get_timestamp(self):
-        zone = timezone(timedelta(hours=self.config_manager.get_zone_delta))
+        zone = timezone(timedelta(hours=self.config_manager.zone_delta))
         zone = datetime.now(zone)
         return zone.strftime('%H:%M:%S')

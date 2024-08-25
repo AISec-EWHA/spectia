@@ -2,6 +2,7 @@ import streamlit as st
 import time
 
 from common.imports import *
+from common.config import *
 from monitoring.gpu import GpuCollector
 
 
@@ -12,12 +13,12 @@ st.set_page_config(
 
 st.title("Monitoring Dashboard")
 
+config_manager = ConfigManager()
 gpu_collector = GpuCollector()
-chart_placeholder = st.empty()
+gpu_placeholder = st.empty()
 
-update_interval = 5
 
-while True:
+def gpu_charts():
     gpu_data = gpu_collector.get_info
     
     chart = alt.Chart(gpu_data).mark_line().encode(
@@ -28,6 +29,9 @@ while True:
         title='GPU Usage'
     )
 
-    chart_placeholder.altair_chart(chart, use_container_width=True)
+    gpu_placeholder.altair_chart(chart, use_container_width=True)
 
-    time.sleep(update_interval)
+
+while True:
+    gpu_charts()
+    time.sleep(config_manager.delta_second)

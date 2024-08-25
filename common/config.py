@@ -10,13 +10,17 @@ class ConfigManager:
         self.setting = 'default'
 
     @property
-    def get_zone_delta(self):
+    def zone_delta(self):
         return int(self.config.get(self.setting, 'zone_delta'))
 
     @property
-    def get_gpu_total_second(self):
+    def delta_second(self):
+        return int(self.config.get(self.setting, 'delta_second'))
+
+    @property
+    def gpu_total_second(self):
         return int(self.config.get(self.setting, 'gpu_total_second'))
 
     @property
-    def get_gpu_delta_second(self):
+    def gpu_delta_second(self):
         return int(self.config.get(self.setting, 'gpu_delta_second'))
