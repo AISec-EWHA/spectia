@@ -39,8 +39,6 @@ class GpuCollector(object):
 
         timestamp = self.time_manager.get_timestamp
 
-        gpu_usage = []
-
         # Usage of the GPUs
         for i in range(self.gpu_num):
             gpu_handle = pynvml.nvmlDeviceGetHandleByIndex(i)
@@ -48,7 +46,7 @@ class GpuCollector(object):
 
             new = pd.DataFrame([{
                 'Timestamp': timestamp,
-                'GPU': i,
+                'GPU': i,                   # GPU starts from number 0
                 'Percentage': gpu_percent
             }])
 
