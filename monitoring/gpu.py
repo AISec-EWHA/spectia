@@ -35,6 +35,8 @@ class GpuCollector(object):
 
     @property
     def gpu_util(self):
+        new_list = pd.DataFrame(columns=['Timestamp', 'GPU', 'Percentage'])
+
         timestamp = self.time_manager.get_timestamp
 
         gpu_usage = []
@@ -50,7 +52,9 @@ class GpuCollector(object):
                 'Percentage': gpu_percent
             }])
 
-            self.update_gpu_util_data(new)
+            new_list = pd.concat([new_list, new], ignore_index=True)
+        
+        self.update_gpu_util_data(new_list)
         
         return self.gpu_util_data
 
