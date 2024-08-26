@@ -31,8 +31,8 @@ def gpu_util_charts():
     
     chart = alt.Chart(gpu_util_data).mark_line().encode(
         x=alt.X('Timestamp:O', title='Timestamp', axis=alt.Axis(labelAngle=0)),
-        y=alt.Y('Percentage:Q', title='Percentage', scale=alt.Scale(domain=[0, 100])),
-        color=alt.Color('GPU:N', scale=gpu_collector.color)
+        y=alt.Y('Percentage:Q', title='Percentage', scale=alt.Scale(domain=[0, 100]), axis=alt.Axis(orient='right')),
+        color=alt.Color('GPU:N', scale=gpu_collector.color, legend=alt.Legend(orient='left', title='GPU'))
     )
 
     gpu_util_placeholder.altair_chart(chart, use_container_width=True)
