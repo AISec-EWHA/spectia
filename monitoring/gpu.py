@@ -7,6 +7,9 @@ from common.imports import *
 from common.time import *
 from common.config import *
 
+gpu_util_data = pd.DataFrame(columns=['Timestamp', 'GPU', 'Percentage'])
+gpu_process_data = pd.DataFrame(columns=['GPU Memory', 'GPU', 'PID', 'User', 'Command'])
+
 
 class GpuCollector(object):
     def __init__(self):
@@ -15,22 +18,45 @@ class GpuCollector(object):
 
         self.config_manager = ConfigManager()
         self.time_manager = TimeManager()
+        self.gpu_util_data_count  = self.config_manager.gpu_total_second // self.config_manager.gpu_delta_second 
 
-        self.gpu_util_data = pd.DataFrame(columns=['Timestamp', 'GPU', 'Percentage'])
-        self.gpu_util_data_count  = self.config_manager.gpu_total_second // self.config_manager.gpu_delta_second
-        self.gpu_process_data = pd.DataFrame(columns=['GPU Memory', 'GPU', 'PID', 'User', 'Command'])
-        
+   
+    @property
+    def gpu_util_data(self):
+        global gpu_util_data
+        return gpu_util_data
+
+
+    @gpu_util_data.setter
+    def gpu_util_data(self, value):
+        global gpu_util_data
+        gpu_util_data = value
+
+
+    @property
+    def gpu_process_data(self):
+        global gpu_process_data
+        return gpu_process_data
+
+
+    @gpu_process_data.setter
+    def gpu_process_data(self, value):
+        global gpu_process_data
+        gpu_process_data = value
+
 
     def update_gpu_util_data(self, new):
-        self.gpu_util_data = pd.concat([self.gpu_util_data, new], ignore_index=True)
+        global gpu_util_data
+        gpu_util_data = pd.concat([gpu_util_data, new], ignore_index=True)
 
-        if len(self.gpu_util_data) // self.gpu_num > self.gpu_util_data_count:
-            second = len(self.gpu_util_data) // self.gpu_num - self.gpu_util_data_count
-            self.gpu_util_data = self.gpu_util_data.iloc[second*self.gpu_num:]
+        if len(gpu_util_data) // self.gpu_num > self.gpu_util_data_count:
+            second = len(gpu_util_data) // self.gpu_num - self.gpu_util_data_count
+            gpu_util_data = gpu_util_data.iloc[second*self.gpu_num:]
 
 
     def update_gpu_process_data(self, new):
-        self.gpu_process_data = new
+        global gpu_process_data
+        gpu_process_data = new
 
 
     @property
