@@ -5,6 +5,7 @@ from common.imports import *
 from common.config import *
 from monitoring.gpu import GpuCollector
 from monitoring.cpu import CpuCollector
+from monitoring.mem import MemCollector
 
 
 st.set_page_config(
@@ -18,6 +19,7 @@ st.title("Monitoring Dashboard")
 config_manager = ConfigManager()
 gpu_collector = GpuCollector()
 cpu_collector = CpuCollector()
+mem_collector = MemCollector()
 col1, col2 = st.columns(2)
 col1.subheader("GPU Percentage Over Time")
 gpu_util_placeholder = col1.empty()
@@ -25,6 +27,8 @@ col1.subheader("GPU Usage by Process")
 gpu_process_placeholder = col1.empty()
 col2.subheader("CPU Percentage by Number")
 cpu_util_placeholder = col2.empty()
+col2.subheader("Virtual/Swap Memory Usage (GB)")
+mem_util_placeholder = col2.empty()
 
 def gpu_util_charts():
     gpu_util_data = gpu_collector.gpu_util
@@ -78,10 +82,45 @@ def cpu_util_charts():
             cols[idx].altair_chart(chart, use_container_width=True)
 
 
+def mem_util_charts():
+    mem_util_data = mem_collector.mem_util
+
+    virtual_chart = alt.Chart(mem_util_data).transform_fold(
+        ['Virtual Used', 'Virtual Available'],
+        as_=['Category', 'Value']
+    ).mark_bar().encode(
+        y=alt.Y('Category:N', title=None, sort=None),
+        x=alt.X('Value:Q', title=None, scale=alt.Scale(domain=[0, mem_util_data['Virtual Total'].values[0]])),
+        color=alt.condition(
+            alt.datum.Category == 'Virtual Used',
+            alt.value('lightsalmon'),
+            alt.value('lightgreen')
+        )
+    )
+
+    swap_chart = alt.Chart(mem_util_data).transform_fold(
+        ['Swap Used', 'Swap Free'],
+        as_=['Category', 'Value']
+    ).mark_bar().encode(
+        y=alt.Y('Category:N', title=None, sort=None),
+        x=alt.X('Value:Q', title=None, scale=alt.Scale(domain=[0, mem_util_data['Swap Total'].values[0]])),
+        color=alt.condition(
+            alt.datum.Category == 'Swap Used',
+            alt.value('lightsalmon'),
+            alt.value('lightgreen')
+        )
+    )
+
+    combined_chart = alt.vconcat(virtual_chart, swap_chart)
+
+    mem_util_placeholder.altair_chart(combined_chart, use_container_width=True)
+
+
 def update_charts():
     gpu_util_charts()
     gpu_process_charts()
     cpu_util_charts()
+    mem_util_charts()
 
 
 while True:
