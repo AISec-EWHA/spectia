@@ -18,7 +18,7 @@ class GpuCollector(object):
 
         self.gpu_util_data = pd.DataFrame(columns=['Timestamp', 'GPU', 'Percentage'])
         self.gpu_util_data_count  = self.config_manager.gpu_total_second // self.config_manager.gpu_delta_second
-        self.gpu_process_data = pd.DataFrame(columns=['GPU Memory (MB)', 'GPU', 'PID', 'User', 'Command'])
+        self.gpu_process_data = pd.DataFrame(columns=['GPU Memory', 'GPU', 'PID', 'User', 'Command'])
         
 
     def update_gpu_util_data(self, new):
@@ -72,7 +72,7 @@ class GpuCollector(object):
                 command = ' '.join(process_info.cmdline())
 
                 new_list.append({
-                    'GPU Memory (MB)': gpu_memory_usage / 1024 / 1024,  # Convert to MB
+                    'GPU Memory': gpu_memory_usage / 1024 / 1024,  # Convert to MB
                     'GPU': i,
                     'PID': str(pid),
                     'User': user,

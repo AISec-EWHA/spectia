@@ -26,7 +26,7 @@ disk_collector = DiskCollector()
 col1, col2 = st.columns(2)
 col1.subheader("GPU Percentage Over Time")
 gpu_util_placeholder = col1.empty()
-col1.subheader("GPU Usage by Process")
+col1.subheader("GPU Usage by Process (MB)")
 gpu_process_placeholder = col1.empty()
 col2.subheader("CPU Percentage by Number")
 cpu_util_placeholder = col2.empty()
@@ -49,7 +49,7 @@ def gpu_util_charts():
 
 def gpu_process_charts():
     gpu_process_data = gpu_collector.gpu_process
-    gpu_process_data = gpu_process_data.sort_values(by='GPU Memory (MB)', ascending=False)
+    gpu_process_data = gpu_process_data.sort_values(by='GPU Memory', ascending=False)
 
     gpu_process_placeholder.dataframe(gpu_process_data, hide_index=True, use_container_width=True)
 
