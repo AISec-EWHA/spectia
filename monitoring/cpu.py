@@ -32,8 +32,9 @@ class CpuCollector(object):
                 'CPU': i+1,                 # CPU starts from number 1
                 'Percentage': cpu_percent
             }])
-
-            new_list = pd.concat([new_list, new], ignore_index=True)
+            
+            if not new.empty:
+                new_list = pd.concat([new_list, new], ignore_index=True)
         
         self.update_cpu_util_data(new_list)
 
