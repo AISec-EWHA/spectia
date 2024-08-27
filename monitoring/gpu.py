@@ -35,7 +35,7 @@ class GpuCollector(object):
 
     @property
     def gpu_util(self):
-        new_list = pd.DataFrame(columns=['Timestamp', 'GPU', 'Percentage'])
+        new_list = []
 
         timestamp = self.time_manager.get_timestamp
 
@@ -44,22 +44,20 @@ class GpuCollector(object):
             gpu_handle = pynvml.nvmlDeviceGetHandleByIndex(i)
             gpu_percent = pynvml.nvmlDeviceGetUtilizationRates(gpu_handle).gpu
 
-            new = pd.DataFrame([{
+            new_list.append({
                 'Timestamp': timestamp,
                 'GPU': i,                   # GPU starts from number 0
                 'Percentage': gpu_percent
-            }])
-
-            new_list = pd.concat([new_list, new], ignore_index=True)
+            })
         
-        self.update_gpu_util_data(new_list)
+        self.update_gpu_util_data(pd.DataFrame(new_list))
         
         return self.gpu_util_data
 
 
     @property
     def gpu_process(self):
-        new_list = pd.DataFrame(columns=['GPU Memory (MB)', 'GPU', 'PID', 'User', 'Command'])
+        new_list = []
 
         # Processes of the GPUs
         for i in range(self.gpu_num):
@@ -73,18 +71,15 @@ class GpuCollector(object):
                 user = process_info.username()
                 command = ' '.join(process_info.cmdline())
 
-                new = pd.DataFrame([{
+                new_list.append({
                     'GPU Memory (MB)': gpu_memory_usage / 1024 / 1024,  # Convert to MB
                     'GPU': i,
                     'PID': str(pid),
                     'User': user,
                     'Command': command
-                }])
+                })
 
-                if not new.empty:
-                    new_list = pd.concat([new_list, new], ignore_index=True)
-
-        self.update_gpu_process_data(new_list)
+        self.update_gpu_process_data(pd.DataFrame(new_list))
         
         return self.gpu_process_data
 

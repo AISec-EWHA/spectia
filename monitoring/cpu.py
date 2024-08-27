@@ -20,22 +20,19 @@ class CpuCollector(object):
 
     @property
     def cpu_util(self):
-        new_list = pd.DataFrame(columns=['Timestamp', 'CPU', 'Percentage'])
+        new_list = []
 
         timestamp = self.time_manager.get_timestamp
 
         cpu_percentages = psutil.cpu_percent(percpu=True)
 
         for i, cpu_percent in enumerate(cpu_percentages):
-            new = pd.DataFrame([{
+            new_list.append({
                 'Timestamp': timestamp,
                 'CPU': i+1,                 # CPU starts from number 1
                 'Percentage': cpu_percent
-            }])
-            
-            if not new.empty:
-                new_list = pd.concat([new_list, new], ignore_index=True)
+            })
         
-        self.update_cpu_util_data(new_list)
+        self.update_cpu_util_data(pd.DataFrame(new_list))
 
         return self.cpu_util_data
