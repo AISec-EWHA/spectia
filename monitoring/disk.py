@@ -27,9 +27,9 @@ class DiskCollector(object):
 
             new_list.append({
                 'Mounted on': partition.mountpoint,
-                'Size': usage.total / 1024 / 1024 / 1024,  # Convert to GB
-                'Used': usage.used / 1024 / 1024 / 1024,
-                'Avail': usage.free / 1024 / 1024 / 1024,
+                'Size': int(usage.total / 1024 / 1024 / 1024),  # Convert to GB
+                'Used': int(usage.used / 1024 / 1024 / 1024),
+                'Avail': int(usage.free / 1024 / 1024 / 1024),
                 'Percentage': usage.percent
             })
 

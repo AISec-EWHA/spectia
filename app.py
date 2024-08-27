@@ -123,6 +123,9 @@ def mem_util_charts():
 
 def disk_util_charts():
     disk_util_data = disk_collector.disk_util
+    disk_mount_points = config_manager.disk_mount_points
+    disk_util_data = disk_util_data[disk_util_data['Mounted on'].isin(disk_mount_points)]
+    disk_util_data = disk_util_data.set_index('Mounted on').reindex(disk_mount_points).reset_index()
     disk_util_placeholder.dataframe(disk_util_data, hide_index=True, use_container_width=True)
 
 
