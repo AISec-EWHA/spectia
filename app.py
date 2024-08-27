@@ -18,10 +18,20 @@ st.set_page_config(
 st.title("Monitoring Dashboard")
 
 config_manager = ConfigManager()
-gpu_collector = GpuCollector()
-cpu_collector = CpuCollector()
-mem_collector = MemCollector()
-disk_collector = DiskCollector()
+
+if 'gpu_collector' not in st.session_state:
+    st.session_state.gpu_collector = GpuCollector()
+if 'cpu_collector' not in st.session_state:
+    st.session_state.cpu_collector = CpuCollector()
+if 'mem_collector' not in st.session_state:
+    st.session_state.mem_collector = MemCollector()
+if 'disk_collector' not in st.session_state:
+    st.session_state.disk_collector = DiskCollector()
+
+gpu_collector = st.session_state.gpu_collector
+cpu_collector = st.session_state.cpu_collector
+mem_collector = st.session_state.mem_collector
+disk_collector = st.session_state.disk_collector
 
 col1, col2 = st.columns(2)
 col1.subheader("GPU Percentage Over Time")
