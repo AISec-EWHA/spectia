@@ -6,6 +6,7 @@ from common.config import *
 from monitoring.gpu import GpuCollector
 from monitoring.cpu import CpuCollector
 from monitoring.mem import MemCollector
+from monitoring.disk import DiskCollector
 
 
 st.set_page_config(
@@ -20,6 +21,8 @@ config_manager = ConfigManager()
 gpu_collector = GpuCollector()
 cpu_collector = CpuCollector()
 mem_collector = MemCollector()
+disk_collector = DiskCollector()
+
 col1, col2 = st.columns(2)
 col1.subheader("GPU Percentage Over Time")
 gpu_util_placeholder = col1.empty()
@@ -29,6 +32,8 @@ col2.subheader("CPU Percentage by Number")
 cpu_util_placeholder = col2.empty()
 col2.subheader("Virtual/Swap Memory Usage (GB)")
 mem_util_placeholder = col2.empty()
+col2.subheader("Disk Usage (GB)")
+disk_util_placeholder = col2.empty()
 
 def gpu_util_charts():
     gpu_util_data = gpu_collector.gpu_util
@@ -46,7 +51,7 @@ def gpu_process_charts():
     gpu_process_data = gpu_collector.gpu_process
     gpu_process_data = gpu_process_data.sort_values(by='GPU Memory (MB)', ascending=False)
 
-    gpu_process_placeholder.dataframe(gpu_process_data, hide_index=True)
+    gpu_process_placeholder.dataframe(gpu_process_data, hide_index=True, use_container_width=True)
 
 
 def cpu_util_charts():
@@ -116,11 +121,17 @@ def mem_util_charts():
     mem_util_placeholder.altair_chart(combined_chart, use_container_width=True)
 
 
+def disk_util_charts():
+    disk_util_data = disk_collector.disk_util
+    disk_util_placeholder.dataframe(disk_util_data, hide_index=True, use_container_width=True)
+
+
 def update_charts():
     gpu_util_charts()
     gpu_process_charts()
     cpu_util_charts()
     mem_util_charts()
+    disk_util_charts()
 
 
 while True:
