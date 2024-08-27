@@ -5,17 +5,29 @@ from common.imports import *
 from common.time import *
 from common.config import *
 
+cpu_util_data = pd.DataFrame(columns=['Timestamp', 'CPU', 'Percentage'])
+
 
 class CpuCollector(object):
     def __init__(self):
         self.config_manager = ConfigManager()
         self.time_manager = TimeManager()
-
-        self.cpu_util_data = pd.DataFrame(columns=['Timestamp', 'CPU', 'Percentage'])
         
+    @property
+    def cpu_util_data(self):
+        global cpu_util_data
+        return cpu_util_data
+
+
+    @cpu_util_data.setter
+    def cpu_util_data(self, value):
+        global cpu_util_data
+        cpu_util_data = value
+
     
     def update_cpu_util_data(self, new):
-        self.cpu_util_data = new
+        global cpu_util_data
+        cpu_util_data = new
     
 
     @property

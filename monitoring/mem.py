@@ -4,16 +4,30 @@ from common.imports import *
 from common.time import *
 from common.config import *
 
+mem_util_data = pd.DataFrame(columns=['Virtual Total', 'Virtual Used', 'Virtual Available', 'Swap Total', 'Swap Used', 'Swap Free'])
+
+
 class MemCollector(object):
     def __init__(self):
-        self.mem_util_data = pd.DataFrame(columns=['Virtual Total', 'Virtual Used', 'Virtual Available', 'Swap Total', 'Swap Used', 'Swap Free'])
-
         self.config_manager = ConfigManager()
         self.time_manager = TimeManager()
 
     
+    @property
+    def mem_util_data(self):
+        global mem_util_data
+        return mem_util_data
+
+
+    @mem_util_data.setter
+    def mem_util_data(self, value):
+        global mem_util_data
+        mem_util_data = value
+
+    
     def update_mem_util_data(self, new):
-        self.mem_util_data = new
+        global mem_util_data
+        mem_util_data = new
 
 
     @property

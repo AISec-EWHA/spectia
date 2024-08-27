@@ -4,16 +4,30 @@ from common.imports import *
 from common.time import *
 from common.config import *
 
+disk_util_data = pd.DataFrame(columns=['Mounted on', 'Size', 'Used', 'Avail', 'Percentage'])
+
+
 class DiskCollector(object):
     def __init__(self):
-        self.disk_util_data = pd.DataFrame(columns=['Mounted on', 'Size', 'Used', 'Avail', 'Percentage'])
-
         self.config_manager = ConfigManager()
         self.time_manager = TimeManager()
 
     
+    @property
+    def disk_util_data(self):
+        global disk_util_data
+        return disk_util_data
+
+
+    @disk_util_data.setter
+    def disk_util_data(self, value):
+        global disk_util_data
+        disk_util_data = value
+
+    
     def update_disk_util_data(self, new):
-        self.disk_util_data = new
+        global disk_util_data
+        disk_util_data = new
 
 
     @property
