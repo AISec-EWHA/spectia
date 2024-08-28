@@ -38,6 +38,10 @@ col1.subheader("GPU Percentage Over Time")
 gpu_util_placeholder = col1.empty()
 col1.subheader("GPU Usage by Process (MB)")
 gpu_process_placeholder = col1.empty()
+col1.subheader("Disk Usage by User (GB)")
+disk_home_placeholder = col1.empty()
+col1.markdown(":blue-background[📌유저 별 디렉토리 용량 탐지 기능 - 스레드 문제로 일시 중단]")
+
 col2.subheader("CPU Percentage by Number")
 cpu_util_placeholder = col2.empty()
 col2.subheader("Virtual/Swap Memory Usage (GB)")
@@ -139,12 +143,18 @@ def disk_util_charts():
     disk_util_placeholder.dataframe(disk_util_data, hide_index=True, use_container_width=True)
 
 
+def disk_home_charts():
+    disk_home_data = disk_collector.disk_home
+    disk_home_placeholder.dataframe(disk_home_data, hide_index=True, use_container_width=True)
+
+
 def update_charts():
     gpu_util_charts()
     gpu_process_charts()
     cpu_util_charts()
     mem_util_charts()
     disk_util_charts()
+    #disk_home_charts()
 
 
 while True:
