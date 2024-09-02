@@ -40,7 +40,7 @@ col1.subheader("GPU Usage by Process (MB)")
 gpu_process_placeholder = col1.empty()
 col1.subheader("Disk Usage by User (GB)")
 disk_home_placeholder = col1.empty()
-col1.markdown(":blue-background[📌유저 별 디렉토리 용량 탐지 기능 - 스레드 문제로 일시 중단]")
+col1.info("📌유저 별 디렉토리 용량 탐지 기능은 스레드 문제로 일시 중단했습니다.")
 
 col2.subheader("CPU Percentage by Number")
 cpu_util_placeholder = col2.empty()
@@ -63,9 +63,12 @@ def gpu_util_charts():
 
 def gpu_process_charts():
     gpu_process_data = gpu_collector.gpu_process
-    gpu_process_data = gpu_process_data.sort_values(by='GPU Memory', ascending=False)
 
-    gpu_process_placeholder.dataframe(gpu_process_data, hide_index=True, use_container_width=True)
+    if gpu_process_data.empty:
+        gpu_process_placeholder.info("🌴No GPU processes are running.")
+    else:
+        gpu_process_data = gpu_process_data.sort_values(by='GPU Memory', ascending=False)
+        gpu_process_placeholder.dataframe(gpu_process_data, hide_index=True, use_container_width=True)
 
 
 def cpu_util_charts():
