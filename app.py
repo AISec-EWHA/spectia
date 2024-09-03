@@ -1,4 +1,6 @@
 import streamlit as st
+from threading import Thread
+from streamlit.runtime.scriptrunner import add_script_run_ctx
 import time
 
 from common.imports import *
@@ -39,8 +41,8 @@ gpu_util_placeholder = col1.empty()
 col1.subheader("GPU Usage by Process (MB)")
 gpu_process_placeholder = col1.empty()
 col1.subheader("Disk Usage by User (GB)")
+col1.info(f"📍Update every {int(config_manager.delta_minute / 60)} minutes")
 disk_home_placeholder = col1.empty()
-col1.info("📌유저 별 디렉토리 용량 탐지 기능은 스레드 문제로 일시 중단했습니다.")
 
 col2.subheader("CPU Percentage by Number")
 cpu_util_placeholder = col2.empty()
@@ -48,6 +50,7 @@ col2.subheader("Virtual/Swap Memory Usage (GB)")
 mem_util_placeholder = col2.empty()
 col2.subheader("Disk Usage (GB)")
 disk_util_placeholder = col2.empty()
+
 
 def gpu_util_charts():
     gpu_util_data = gpu_collector.gpu_util
@@ -151,15 +154,25 @@ def disk_home_charts():
     disk_home_placeholder.dataframe(disk_home_data, hide_index=True, use_container_width=True)
 
 
-def update_charts():
+def update_second_charts():
     gpu_util_charts()
     gpu_process_charts()
     cpu_util_charts()
     mem_util_charts()
     disk_util_charts()
-    #disk_home_charts()
+    
+
+def update_minute_charts():
+    while True:
+        disk_home_charts()
+        time.sleep(config_manager.delta_minute)
+
+
+minute_thread = Thread(target=update_minute_charts)
+add_script_run_ctx(minute_thread)
+minute_thread.start()
 
 
 while True:
-    update_charts()
+    update_second_charts()
     time.sleep(config_manager.delta_second)
