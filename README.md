@@ -4,6 +4,15 @@ Spectia is a Streamlit program specifically made for monitoring Linux server res
 
 ![spectia](https://github.com/user-attachments/assets/83ca096b-07c1-48bd-aa7c-e3b80d1fa6d5)
 
+# ✅ How to use
+
+First, make new Python Environment with Anaconda and install requirements:
+```bash
+conda create -n spectia python=3.10
+conda activate spectia
+pip install -r requirements.txt
+```
+
 You can run the program with:
 ```bash
 streamlit run app.py
