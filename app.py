@@ -75,13 +75,16 @@ def gpu_process_charts():
 
 
 def cpu_util_charts():
+    cpu_count_segment = int(cpu_collector.cpu_count // 4)
+
     with cpu_util_placeholder.container():
         cols = st.columns(4)
         cpu_util_datas = cpu_collector.cpu_util
         cpu_util_datas = cpu_util_datas.sort_values(by='CPU')
 
         cpu_util_datas = [
-            cpu_util_datas.iloc[i*16:(i+1)*16].reset_index(drop=True)
+            cpu_util_datas.iloc[i*cpu_count_segment:(i+1)*cpu_count_segment].reset_index(drop=True)
+            if i < 3 else cpu_util_datas.iloc[i*cpu_count_segment:].reset_index(drop=True)
             for i in range(4)
         ]
 

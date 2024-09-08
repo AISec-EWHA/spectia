@@ -12,6 +12,7 @@ class CpuCollector(object):
     def __init__(self):
         self.config_manager = ConfigManager()
         self.time_manager = TimeManager()
+        self.cpu_count = psutil.cpu_count(logical=False)
         
     @property
     def cpu_util_data(self):
