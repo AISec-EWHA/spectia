@@ -18,7 +18,7 @@ class GpuCollector(object):
 
         self.config_manager = ConfigManager()
         self.time_manager = TimeManager()
-        self.gpu_util_data_count  = self.config_manager.gpu_total_second // self.config_manager.gpu_delta_second 
+        self.gpu_util_data_count  = self.config_manager.gpu_total_second // self.config_manager.delta_second
 
    
     @property
