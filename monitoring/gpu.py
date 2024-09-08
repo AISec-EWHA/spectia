@@ -112,12 +112,21 @@ class GpuCollector(object):
 
     @property
     def color(self):
-        return alt.Scale(
-            domain=list(range(self.gpu_num)),
-            range=[
+        colors = [
                 '#FF0000', '#FF7F00', '#FFFF00', '#00FF00', 
                 '#00FFFF', '#375582', '#7F00FF', '#FF69B4'
             ]
+
+        if self.gpu_num > len(colors):
+            rand_colors = [
+                '#{:06X}'.format(random.randint(0, 0xFFFFFF))
+                for _ in range(self.gpu_num - len(base_colors))
+            ]
+            colors = colors + rand_colors
+
+        return alt.Scale(
+            domain=list(range(self.gpu_num)),
+            range=colors
         )
 
 
