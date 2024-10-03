@@ -29,3 +29,7 @@ class ConfigManager:
     @property
     def disk_mount_points(self):
         return ast.literal_eval(self.config.get(self.setting, 'disk_mount_points'))
+
+    @property
+    def proc_top_n(self):
+        return int(self.config.get(self.setting, 'proc_top_n'))

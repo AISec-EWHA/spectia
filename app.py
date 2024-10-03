@@ -9,6 +9,7 @@ from monitoring.gpu import GpuCollector
 from monitoring.cpu import CpuCollector
 from monitoring.mem import MemCollector
 from monitoring.disk import DiskCollector
+from monitoring.proc import ProcCollector
 
 
 st.set_page_config(
@@ -29,17 +30,23 @@ if 'mem_collector' not in st.session_state:
     st.session_state.mem_collector = MemCollector()
 if 'disk_collector' not in st.session_state:
     st.session_state.disk_collector = DiskCollector()
+if 'proc_collector' not in st.session_state:
+    st.session_state.proc_collector = ProcCollector()
 
 gpu_collector = st.session_state.gpu_collector
 cpu_collector = st.session_state.cpu_collector
 mem_collector = st.session_state.mem_collector
 disk_collector = st.session_state.disk_collector
+proc_collector = st.session_state.proc_collector
 
 col1, col2 = st.columns(2)
 col1.subheader("GPU Percentage Over Time")
 gpu_util_placeholder = col1.empty()
 col1.subheader("GPU Usage by Process (MB)")
 gpu_process_placeholder = col1.empty()
+col1.subheader("CPU Usage by Process (MB)")
+col1.info(f"📍Shows top {config_manager.proc_top_n} processes only")
+proc_util_placeholder = col1.empty()
 col1.subheader("Disk Usage by User (GB)")
 col1.info(f"📍Update every {int(config_manager.delta_minute / 60)} minutes")
 disk_home_placeholder = col1.empty()
@@ -72,6 +79,15 @@ def gpu_process_charts():
     else:
         gpu_process_data = gpu_process_data.sort_values(by='GPU Memory', ascending=False)
         gpu_process_placeholder.dataframe(gpu_process_data, hide_index=True, use_container_width=True)
+
+
+def proc_util_charts():
+    proc_util_data = proc_collector.proc_util
+
+    if proc_util_data.empty:
+        proc_util_placeholder.info("🌴No CPU processes are running.")
+    else:
+        proc_util_placeholder.dataframe(proc_util_data, hide_index=True, use_container_width=True)
 
 
 def cpu_util_charts():
@@ -160,6 +176,7 @@ def disk_home_charts():
 def update_second_charts():
     gpu_util_charts()
     gpu_process_charts()
+    proc_util_charts()
     cpu_util_charts()
     mem_util_charts()
     disk_util_charts()
