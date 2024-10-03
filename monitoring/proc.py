@@ -43,7 +43,7 @@ class ProcCollector(object):
                 'PID': proc.info['pid'],
                 'Name': proc.info['name'],
                 'CPU Usage (%)': cpu_usage,
-                'Memory Usage (GB)': mem_usage,
+                'Memory Usage (GB)': int(mem_usage),
                 'Command': cmd
             })
 
