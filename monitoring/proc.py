@@ -35,17 +35,20 @@ class ProcCollector(object):
         new_list = []
 
         for proc in psutil.process_iter(attrs=['pid', 'name', 'cpu_percent', 'memory_info']):
-            cpu_usage = proc.info['cpu_percent']
-            mem_usage = proc.info['memory_info'].rss / 1024 / 1024 # Convert to MB
-            cmd = ' '.join(proc.cmdline())
+            try:
+                cpu_usage = proc.info['cpu_percent']
+                mem_usage = proc.info['memory_info'].rss / 1024 / 1024 # Convert to MB
+                cmd = ' '.join(proc.cmdline())
 
-            new_list.append({
-                'PID': proc.info['pid'],
-                'Name': proc.info['name'],
-                'CPU Usage (%)': cpu_usage,
-                'Memory Usage (GB)': int(mem_usage),
-                'Command': cmd
-            })
+                new_list.append({
+                    'PID': proc.info['pid'],
+                    'Name': proc.info['name'],
+                    'CPU Usage (%)': cpu_usage,
+                    'Memory Usage (GB)': int(mem_usage),
+                    'Command': cmd
+                })
+            except (psutil.ZombieProcess, psutil.NoSuchProcess, psutil.AccessDenied):
+                continue
 
         sorted_list = sorted(new_list, key=lambda x: x['CPU Usage (%)'], reverse=True)[:self.proc_util_data_count] # Sort with CPU
         self.update_proc_util_data(pd.DataFrame(sorted_list))
