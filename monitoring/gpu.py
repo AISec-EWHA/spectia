@@ -91,19 +91,22 @@ class GpuCollector(object):
             gpu_processes = pynvml.nvmlDeviceGetComputeRunningProcesses(gpu_handle)
 
             for process in gpu_processes:
-                pid = process.pid
-                gpu_memory_usage = process.usedGpuMemory
-                process_info = psutil.Process(pid)
-                user = process_info.username()
-                command = ' '.join(process_info.cmdline())
+                try:
+                    pid = process.pid
+                    gpu_memory_usage = process.usedGpuMemory
+                    process_info = psutil.Process(pid)
+                    user = process_info.username()
+                    command = ' '.join(process_info.cmdline())
 
-                new_list.append({
-                    'GPU Memory': gpu_memory_usage / 1024 / 1024,  # Convert to MB
-                    'GPU': i,
-                    'PID': str(pid),
-                    'User': user,
-                    'Command': command
-                })
+                    new_list.append({
+                        'GPU Memory': gpu_memory_usage / 1024 / 1024,  # Convert to MB
+                        'GPU': i,
+                        'PID': str(pid),
+                        'User': user,
+                        'Command': command
+                    })
+                except (psutil.ZombieProcess, psutil.NoSuchProcess, psutil.AccessDenied):
+                    continue
 
         self.update_gpu_process_data(pd.DataFrame(new_list))
         
