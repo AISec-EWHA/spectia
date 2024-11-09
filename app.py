@@ -20,7 +20,7 @@ st.set_page_config(
 )
 
 st.title("Monitoring Dashboard")
-st.info(f"📍Update-2024-11-09: 네트워크 트래픽 in/out 확인 기능 추가되었습니다.")
+st.info(f"📍Update-2024-11-09: 네트워크 트래픽 In/Out (MB/s) 확인 기능 추가되었습니다.")
 
 config_manager = ConfigManager()
 
@@ -52,6 +52,8 @@ gpu_process_placeholder = col1.empty()
 col1.subheader("CPU Usage by Process (MB)")
 col1.info(f"📍Shows top {config_manager.proc_top_n} processes only")
 proc_util_placeholder = col1.empty()
+col1.subheader("Disk Usage (GB)")
+disk_util_placeholder = col1.empty()
 
 col2.subheader("CPU Percentage by Number")
 cpu_util_placeholder = col2.empty()
@@ -62,8 +64,6 @@ net_util_placeholder = col2.empty()
 col2.subheader("Disk Usage by User (GB)")
 col2.info(f"📍Update every {int(config_manager.delta_minute / 60)} minutes")
 disk_home_placeholder = col2.empty()
-col2.subheader("Disk Usage (GB)")
-disk_util_placeholder = col2.empty()
 
 
 def gpu_util_charts():
