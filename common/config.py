@@ -27,6 +27,14 @@ class ConfigManager:
         return int(self.config.get(self.setting, 'gpu_total_second'))
 
     @property
+    def net_total_second(self):
+        return int(self.config.get(self.setting, 'net_total_second'))
+
+    @property
+    def net_delta_second(self):
+        return int(self.config.get(self.setting, 'net_delta_second'))
+
+    @property
     def disk_mount_points(self):
         return ast.literal_eval(self.config.get(self.setting, 'disk_mount_points'))
 

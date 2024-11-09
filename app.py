@@ -8,6 +8,7 @@ from common.config import *
 from monitoring.gpu import GpuCollector
 from monitoring.cpu import CpuCollector
 from monitoring.mem import MemCollector
+from monitoring.net import NetCollector
 from monitoring.disk import DiskCollector
 from monitoring.proc import ProcCollector
 
@@ -19,6 +20,7 @@ st.set_page_config(
 )
 
 st.title("Monitoring Dashboard")
+st.info(f"📍Update-2024-11-09: 네트워크 트래픽 in/out 확인 기능 추가되었습니다.")
 
 config_manager = ConfigManager()
 
@@ -28,6 +30,8 @@ if 'cpu_collector' not in st.session_state:
     st.session_state.cpu_collector = CpuCollector()
 if 'mem_collector' not in st.session_state:
     st.session_state.mem_collector = MemCollector()
+if 'net_collector' not in st.session_state:
+    st.session_state.net_collector = NetCollector()
 if 'disk_collector' not in st.session_state:
     st.session_state.disk_collector = DiskCollector()
 if 'proc_collector' not in st.session_state:
@@ -36,6 +40,7 @@ if 'proc_collector' not in st.session_state:
 gpu_collector = st.session_state.gpu_collector
 cpu_collector = st.session_state.cpu_collector
 mem_collector = st.session_state.mem_collector
+net_collector = st.session_state.net_collector
 disk_collector = st.session_state.disk_collector
 proc_collector = st.session_state.proc_collector
 
@@ -52,6 +57,8 @@ col2.subheader("CPU Percentage by Number")
 cpu_util_placeholder = col2.empty()
 col2.subheader("Virtual/Swap Memory Usage (GB)")
 mem_util_placeholder = col2.empty()
+col2.subheader("Network In/Out Bound (MB)")
+net_util_placeholder = col2.empty()
 col2.subheader("Disk Usage by User (GB)")
 col2.info(f"📍Update every {int(config_manager.delta_minute / 60)} minutes")
 disk_home_placeholder = col2.empty()
@@ -160,6 +167,19 @@ def mem_util_charts():
     mem_util_placeholder.altair_chart(combined_chart, use_container_width=True)
 
 
+def net_util_charts():
+    net_util_data = net_collector.net_util
+    net_util_data = net_util_data.melt('Timestamp', var_name='Traffic Type', value_name='MB/s')
+
+    chart = alt.Chart(net_util_data).mark_line().encode(
+        x=alt.X('Timestamp:O', title='Timestamp', axis=alt.Axis(labelAngle=0)),
+        y=alt.Y('MB/s:Q', title='Traffic (MB/s)'),
+        color=alt.Color('Traffic Type:N', scale=alt.Scale(domain=['In', 'Out'], range=['lightgreen', 'lightsalmon']), legend=alt.Legend(title='Traffic Type'))
+    )
+
+    net_util_placeholder.altair_chart(chart, use_container_width=True)
+
+
 def disk_util_charts():
     disk_util_data = disk_collector.disk_util
     disk_mount_points = config_manager.disk_mount_points
@@ -182,6 +202,12 @@ def update_second_charts():
     disk_util_charts()
     
 
+def update_second_plus_one_charts():
+    while True:
+        net_util_charts()
+        time.sleep(config_manager.delta_second)
+
+
 def update_minute_charts():
     while True:
         disk_home_charts()
@@ -191,6 +217,11 @@ def update_minute_charts():
 minute_thread = Thread(target=update_minute_charts)
 add_script_run_ctx(minute_thread)
 minute_thread.start()
+
+
+second_plus_one_thread = Thread(target=update_second_plus_one_charts)
+add_script_run_ctx(second_plus_one_thread)
+second_plus_one_thread.start()
 
 
 while True:
