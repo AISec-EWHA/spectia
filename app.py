@@ -20,7 +20,7 @@ st.set_page_config(
 )
 
 st.title("Monitoring Dashboard")
-st.info(f"📍Update-2024-11-09: 네트워크 트래픽 In/Out (MB/s) 확인 기능 추가되었습니다.")
+st.info(f"📍update-2024-12-06: 네트워크 트래픽 In/Out (MB/) 기능 에러 수정되었습니다.")
 
 config_manager = ConfigManager()
 
@@ -193,7 +193,7 @@ def disk_home_charts():
     disk_home_placeholder.dataframe(disk_home_data, hide_index=True, use_container_width=True)
 
 
-def update_second_charts():
+def update_5_second_charts():
     gpu_util_charts()
     gpu_process_charts()
     proc_util_charts()
@@ -202,28 +202,28 @@ def update_second_charts():
     disk_util_charts()
     
 
-def update_second_plus_one_charts():
+def update_1_second_charts():
     while True:
         net_util_charts()
-        time.sleep(config_manager.delta_second)
+        time.sleep(config_manager.net_delta_second)
 
 
-def update_minute_charts():
+def update_5_minute_charts():
     while True:
         disk_home_charts()
         time.sleep(config_manager.delta_minute)
 
 
-minute_thread = Thread(target=update_minute_charts)
+minute_thread = Thread(target=update_5_minute_charts)
 add_script_run_ctx(minute_thread)
 minute_thread.start()
 
 
-second_plus_one_thread = Thread(target=update_second_plus_one_charts)
-add_script_run_ctx(second_plus_one_thread)
-second_plus_one_thread.start()
+second_thread = Thread(target=update_1_second_charts)
+add_script_run_ctx(second_thread)
+second_thread.start()
 
 
 while True:
-    update_second_charts()
+    update_5_second_charts()
     time.sleep(config_manager.delta_second)
