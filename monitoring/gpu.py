@@ -50,8 +50,7 @@ class GpuCollector(object):
         gpu_util_data = pd.concat([gpu_util_data, new], ignore_index=True)
 
         if len(gpu_util_data) // self.gpu_num > self.gpu_util_data_count:
-            second = len(gpu_util_data) // self.gpu_num - self.gpu_util_data_count
-            gpu_util_data = gpu_util_data.iloc[second*self.gpu_num:]
+            gpu_util_data = gpu_util_data.iloc[-self.gpu_num*self.gpu_util_data_count:]
 
 
     def update_gpu_process_data(self, new):

@@ -1,4 +1,3 @@
-
 import psutil
 import time
 
@@ -35,8 +34,7 @@ class NetCollector(object):
             net_util_data = pd.concat([net_util_data, new], ignore_index=True)
 
             if len(net_util_data) > self.net_util_data_count:
-                count = len(net_util_data) - self.net_util_data_count
-                net_util_data = net_util_data.iloc[count:]
+                net_util_data = net_util_data.iloc[-self.net_util_data_count:]
         else:
             self.net_util_data = new
 
