@@ -23,8 +23,16 @@ class ConfigManager:
         return int(self.config.get(self.setting, 'delta_minute'))
 
     @property
+    def cpu_delta_second(self):
+        return int(self.config.get(self.setting, 'cpu_delta_second'))
+
+    @property
     def gpu_total_second(self):
         return int(self.config.get(self.setting, 'gpu_total_second'))
+
+    @property
+    def gpu_delta_second(self):
+        return int(self.config.get(self.setting, 'gpu_delta_second'))
 
     @property
     def net_total_second(self):

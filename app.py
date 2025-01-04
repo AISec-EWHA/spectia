@@ -20,7 +20,7 @@ st.set_page_config(
 )
 
 st.title("Monitoring Dashboard")
-st.info(f"📍update-2024-12-06: 네트워크 트래픽 In/Out (MB/) 기능 에러 수정되었습니다.")
+st.info(f"📍update-2025-01-04: 마이너한 오류 수정")
 
 config_manager = ConfigManager()
 
@@ -200,28 +200,27 @@ def update_5_second_charts():
     cpu_util_charts()
     mem_util_charts()
     disk_util_charts()
-    
 
-def update_1_second_charts():
+
+def update_net_charts():
     while True:
         net_util_charts()
         time.sleep(config_manager.net_delta_second)
 
 
-def update_5_minute_charts():
+def update_disk_charts():
     while True:
         disk_home_charts()
         time.sleep(config_manager.delta_minute)
 
 
-minute_thread = Thread(target=update_5_minute_charts)
-add_script_run_ctx(minute_thread)
-minute_thread.start()
+disk_thread = Thread(target=update_disk_charts)
+add_script_run_ctx(disk_thread)
+disk_thread.start()
 
-
-second_thread = Thread(target=update_1_second_charts)
-add_script_run_ctx(second_thread)
-second_thread.start()
+net_thread = Thread(target=update_net_charts)
+add_script_run_ctx(net_thread)
+net_thread.start()
 
 
 while True:
