@@ -14,6 +14,7 @@ class NetCollector(object):
         self.time_manager = TimeManager()
         self.net_util_data_count  = self.config_manager.net_total_second // self.config_manager.net_delta_second
         self.net_past = psutil.net_io_counters()
+        self.net_delta_second = self.config_manager.net_delta_second
 
     @property
     def net_util_data(self):

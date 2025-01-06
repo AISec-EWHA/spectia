@@ -59,7 +59,7 @@ col2.subheader("CPU Percentage by Number")
 cpu_util_placeholder = col2.empty()
 col2.subheader("Virtual/Swap Memory Usage (GB)")
 mem_util_placeholder = col2.empty()
-col2.subheader("Network In/Out Bound (MB)")
+col2.subheader(f"Network In/Out Bound (MB/{config_manager.net_delta_second}s)")
 net_util_placeholder = col2.empty()
 col2.subheader("Disk Usage by User (GB)")
 col2.info(f"📍Update every {int(config_manager.delta_minute / 60)} minutes")
@@ -169,12 +169,12 @@ def mem_util_charts():
 
 def net_util_charts():
     net_util_data = net_collector.net_util
-    net_util_data = net_util_data.melt('Timestamp', var_name='Traffic Type', value_name='MB/s')
+    net_util_data = net_util_data.melt('Timestamp', var_name='Type', value_name=f'MB/{config_manager.net_delta_second}s')
 
     chart = alt.Chart(net_util_data).mark_line().encode(
         x=alt.X('Timestamp:O', title='Timestamp', axis=alt.Axis(labelAngle=0)),
-        y=alt.Y('MB/s:Q', title='Traffic (MB/s)'),
-        color=alt.Color('Traffic Type:N', scale=alt.Scale(domain=['In', 'Out'], range=['lightgreen', 'lightsalmon']), legend=alt.Legend(title='Traffic Type'))
+        y=alt.Y(f'MB/{config_manager.net_delta_second}s:Q', title=f'Traffic(MB/{config_manager.net_delta_second}s)'),
+        color=alt.Color('Type:N', scale=alt.Scale(domain=['In', 'Out'], range=['lightgreen', 'lightsalmon']), legend=alt.Legend(title='Type'))
     )
 
     net_util_placeholder.altair_chart(chart, use_container_width=True)
