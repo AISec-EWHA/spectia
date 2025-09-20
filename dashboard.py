@@ -16,7 +16,8 @@ from monitoring.proc import ProcCollector
 st.set_page_config(
     page_title="AISEC",
     page_icon="🔐",
-    layout="wide"
+    layout="wide",
+    initial_sidebar_state="collapsed"
 )
 
 st.title("Monitoring Dashboard")
@@ -62,7 +63,8 @@ mem_util_placeholder = col2.empty()
 col2.subheader(f"Network In/Out Bound (MB/{config_manager.net_delta_second}s)")
 net_util_placeholder = col2.empty()
 col2.subheader("Disk Usage by User (GB)")
-col2.info(f"📍Update every {int(config_manager.delta_minute / 60)} minutes")
+col2.info(f"📍 해당 프로세스는 CPU 사용률이 많아, 논문 마감 기간 동안 꺼 놓겠습니다.")
+# col2.info(f"📍Update every {int(config_manager.delta_minute / 60)} minutes")
 disk_home_placeholder = col2.empty()
 
 
@@ -84,7 +86,7 @@ def gpu_process_charts():
     if gpu_process_data.empty:
         gpu_process_placeholder.info("🌴No GPU processes are running.")
     else:
-        gpu_process_data = gpu_process_data.sort_values(by='GPU Memory', ascending=False)
+        gpu_process_data = gpu_process_data.sort_values(by='GPU', ascending=True)
         gpu_process_placeholder.dataframe(gpu_process_data, hide_index=True, use_container_width=True)
 
 
@@ -214,9 +216,9 @@ def update_disk_charts():
         time.sleep(config_manager.delta_minute)
 
 
-disk_thread = Thread(target=update_disk_charts)
-add_script_run_ctx(disk_thread)
-disk_thread.start()
+# disk_thread = Thread(target=update_disk_charts)
+# add_script_run_ctx(disk_thread)
+# disk_thread.start()
 
 net_thread = Thread(target=update_net_charts)
 add_script_run_ctx(net_thread)
