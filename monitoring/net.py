@@ -60,5 +60,7 @@ class NetCollector(object):
 
         self.net_past = net_new
         self.update_net_util_data(pd.DataFrame(new_list))
+        print(net_util_data)
+        print()
         
         return self.net_util_data
